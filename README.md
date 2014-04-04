@@ -100,9 +100,10 @@ Example for basic check:
 
 <pre><code>
 define service{
-	host_name			Test-Server
-	use					generic-service
-	check_command		check_usolved_disks!90!95
+	host_name				Test-Server
+	service_description		Disks
+	use						generic-service
+	check_command			check_usolved_disks!90!95
 }
 </code></pre>
 
@@ -110,9 +111,10 @@ Example for using performance data and excluding some partitions:
 
 <pre><code>
 define service{
-	host_name			Test-Server
-	use					generic-service
-	check_command		check_usolved_disks!90!95!yes!'D:,E:'
+	host_name				Test-Server
+	service_description		Disks
+	use						generic-service
+	check_command			check_usolved_disks!90!95!yes!'D:,E:'
 }
 </code></pre>
 
