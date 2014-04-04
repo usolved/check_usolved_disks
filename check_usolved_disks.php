@@ -96,18 +96,18 @@ function show_help($help_for)
 
 
 
-function snmp_walk($snmp_host, $snmp_community, $snmp_oid_hrStorageDesc, $snmp_version)
+function snmp_walk($snmp_host, $snmp_community, $snmp_oid, $snmp_version)
 {
 	if($snmp_version == "1")
 	{
-		if($snmp_return = @snmpwalk($snmp_host, $snmp_community, $snmp_oid_hrStorageDesc))
+		if($snmp_return = @snmpwalk($snmp_host, $snmp_community, $snmp_oid))
 			return $snmp_return;
 		else
 			show_help("SNMP");
 	}
 	else if($snmp_version == "2c" || $snmp_version == "2")
 	{
-		if($snmp_return = @snmp2_walk($snmp_host, $snmp_community, $snmp_oid_hrStorageDesc))
+		if($snmp_return = @snmp2_walk($snmp_host, $snmp_community, $snmp_oid))
 			return $snmp_return;
 		else
 			show_help("SNMP");
