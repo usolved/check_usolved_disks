@@ -8,6 +8,10 @@ If a system gets a new partition you need need to change your check.
 
 The plugin also returns performance data and you can exclude disks that you don't want to check.
 
+## Authors
+
+Ricardo Klement (www.usolved.net)
+
 ## Installation
 
 Just copy the file check_usolved_disks.php into your Nagios plugin directory.
