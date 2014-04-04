@@ -2,8 +2,11 @@
 
 ## Overview
 
-This PHP Nagios plugin automaticly detects all partitions of a Windows or Linux operating system.
-You
+This PHP Nagios plugin automaticly detects all disks/partitions of a Windows or Linux operating system and checks the free space.
+You don't need a check for every disk and just use this one check that'll return all available disks on the system.
+If a system gets a new partition you need need to change your check.
+
+The plugin also returns performance data and you can exclude disks that you don't want to check.
 
 ## Installation
 
@@ -11,6 +14,7 @@ Just copy the file check_usolved_disks.php into your Nagios plugin directory.
 For example into the path /usr/local/nagios/libexec/
 
 Give check_usolved_disks.php the permission for execution for the nagios user.
+If you have at least PHP 5 this plugin should run out-of-the-box.
 
 ## Usage
 
@@ -42,7 +46,7 @@ D: - Size: 80 GB / Used: 70.22 GB (87.8% used)
 Here are all arguments that can be used with this plugin:
 
 <pre><code>
--H <host address>
+-H \<host address\>
 Give the host address with the IP address or FQDN
 
 -C <snmp community>
@@ -77,12 +81,12 @@ define command {
 }
 </code></pre>
 
-Example for using performance data and excluding some partitions:
+Example for using performance data, specific snmp version and excluding some partitions:
 
 <pre><code>
 define command {
     command_name    check_usolved_disks
-    command_line    $USER1$/check_usolved_disks.php -H $HOSTADDRESS$ -C $_HOSTSNMPCOMMUNITY$ -w $ARG1$ -c $ARG2$ -P $ARG3$ -E $ARG4$
+    command_line    $USER1$/check_usolved_disks.php -H $HOSTADDRESS$ -C $_HOSTSNMPCOMMUNITY$ -V $_HOSTSNMPVERSION$ -w $ARG1$ -c $ARG2$ -P $ARG3$ -E $ARG4$
 }
 </code></pre>
 
