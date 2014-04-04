@@ -26,7 +26,7 @@ If you have at least PHP 5 this plugin should run out-of-the-box.
 If you are in the Nagios plugin directory execute this command:
 
 <pre><code>
-./check_usolved_disks -H localhost -C public -w 90 -c 95
+./check_usolved_disks.php -H localhost -C public -w 90 -c 95
 </code></pre>
 
 This should output something like this on a Linux machine:
