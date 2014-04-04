@@ -46,25 +46,25 @@ D: - Size: 80 GB / Used: 70.22 GB (87.8% used)
 Here are all arguments that can be used with this plugin:
 
 <pre><code>
--H \<host address\>
+-H &lt;host address&gt;
 Give the host address with the IP address or FQDN
 
--C <snmp community>
+-C &lt;snmp community&gt;
 Give the SNMP Community String
 
--w <warn>
+-w &lt;warn&gt;
 Warning treshold in percent
 
--c <crit>
+-c &lt;crit&gt;
 Critical treshold in percent
 
-[-V <snmp version>]
+[-V &lt;snmp version&gt;]
 Optional: SNMP version 1 or 2c are supported, if argument not given version 1 is used by default
 
-[-P <perfdata>]
+[-P &lt;perfdata&gt;]
 Optional: Give 'yes' as argument if you wish performace data output
 
-[-E '<exclude partitions>']
+[-E '&lt;exclude partitions&gt;']
 Optional: Exclude partitions with a comma separated list on Windows like 'D:,E:' (with or without colon) or on Linux '/var,/tmp'
 </code></pre>
 
