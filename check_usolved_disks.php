@@ -4,7 +4,7 @@
 Automaticly checks all partitions of a Windows or Linux operating system.
 You don't need special libraries. If you have PHP 5 or higher installed it should be working.
 
-Copyright (c) 2013 Ricardo Klement (https://github.com/usolved)
+Copyright (c) 2014 Ricardo Klement (https://github.com/usolved)
 
 
 This program is free software; you can redistribute it and/or
