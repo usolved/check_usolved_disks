@@ -273,8 +273,13 @@ foreach($storage_info as $storage_info_value)
 
 	$hrStorageDesc_output	= $storage_info_value['hrStorageDesc'];
 	$hrStorageType_output	= $storage_info_value['hrStorageType'];
-	$hrStorageSize_output	= round( (($storage_info_value['hrStorageSize'] * $storage_info_value['hrStorageUnit']) / 1024 / 1024 / 1024), 2); //byte to gb
-	$hrStorageUsed_output	= round( (($storage_info_value['hrStorageUsed'] * $storage_info_value['hrStorageUnit']) / 1024 / 1024 / 1024), 2);
+	
+	//if the disk size is bigger than the 32 bit snmp value could store it, then add value to correct the value
+	$hrStorageSize = $storage_info_value['hrStorageSize'] < 0 ? $storage_info_value['hrStorageSize']  + 4294967296 : $storage_info_value['hrStorageSize'];
+	$hrStorageUsed = $storage_info_value['hrStorageUsed'] < 0 ? $storage_info_value['hrStorageUsed']  + 4294967296 : $storage_info_value['hrStorageUsed'];
+
+	$hrStorageSize_output	= round( (($hrStorageSize * $storage_info_value['hrStorageUnit']) / 1024 / 1024 / 1024), 2); //byte to gb
+	$hrStorageUsed_output	= round( (($hrStorageUsed * $storage_info_value['hrStorageUnit']) / 1024 / 1024 / 1024), 2);
 
 
 	//---------------------------------------------------------------------------
