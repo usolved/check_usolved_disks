@@ -4,7 +4,7 @@
 
 This PHP Nagios plugin automaticly detects all disks/partitions of a Windows or Linux operating system and checks the free space.
 You don't need a check for every disk and just can use this check that'll return all available disks on the system.
-If a system gets a new partition you need need to change your check.
+If a system gets a new partition you don't need to change your check.
 
 The plugin also returns performance data and you can also exclude disks that you don't want to check.
 
