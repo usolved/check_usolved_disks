@@ -1,5 +1,6 @@
 #!/usr/bin/php
 <?php
+
 /*
 Automaticly checks all partitions of a Windows or Linux operating system.
 You don't need special libraries. If you have PHP 5 or higher installed it should be working.
@@ -56,6 +57,11 @@ function show_help($help_for)
 		echo "Unknown - Could't read SNMP information. Properly the host isn't configured correctly for SNMP or wrong SNMP version was given.\n";
 		exit(3);
 	}
+	else if($help_for == "SNMP_MODULE")
+	{
+		echo "Unknown - PHP SNMP mpdule isn't enabled. Please check if you have installed/enabled the snmp extension for PHP.\n";
+		exit(3);
+	}
 	else if($help_for == "ERROR_ARGUMENT_NUMERIC")
 	{	
 		echo "Unknown - Warning and Critical have to be numeric.\n";
@@ -98,22 +104,28 @@ function show_help($help_for)
 
 function snmp_walk($snmp_host, $snmp_community, $snmp_oid, $snmp_version)
 {
-	if($snmp_version == "1")
+	if(extension_loaded("snmp"))
 	{
-		if($snmp_return = @snmpwalk($snmp_host, $snmp_community, $snmp_oid))
-			return $snmp_return;
-		else
-			show_help("SNMP");
-	}
-	else if($snmp_version == "2c" || $snmp_version == "2")
-	{
-		if($snmp_return = @snmp2_walk($snmp_host, $snmp_community, $snmp_oid))
-			return $snmp_return;
+
+		if($snmp_version == "1")
+		{
+			if($snmp_return = @snmpwalk($snmp_host, $snmp_community, $snmp_oid))
+				return $snmp_return;
+			else
+				show_help("SNMP");
+		}
+		else if($snmp_version == "2c" || $snmp_version == "2")
+		{
+			if($snmp_return = @snmp2_walk($snmp_host, $snmp_community, $snmp_oid))
+				return $snmp_return;
+			else
+				show_help("SNMP");
+		}
 		else
 			show_help("SNMP");
 	}
 	else
-		show_help("SNMP");
+		show_help("SNMP_MODULE");
 }
 
 
