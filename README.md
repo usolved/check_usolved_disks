@@ -20,6 +20,12 @@ For example into the path /usr/local/nagios/libexec/
 Add execution permission for the nagios user on check_usolved_disks.php.
 If you have at least PHP 5 this plugin should run out-of-the-box.
 
+Make sure to have the PHP SNMP module installed and enabled in your php.ini.
+
+&gt; apt-get install php5-snmp (Ubuntu, Debian, ...)
+or
+&gt; yum install php-snmp (RedHat, CentOS, ...)
+
 ## Usage
 
 ### Test on command line
