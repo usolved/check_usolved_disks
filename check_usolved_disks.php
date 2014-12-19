@@ -67,11 +67,16 @@ function show_help($help_for)
 		echo "Unknown - Warning and Critical have to be numeric.\n";
 		exit(3);
 	}
+	else if($help_for == "ERROR_NO_OS")
+	{
+		echo "Unknown - OS couldn't be determined. You can try to add the -O parameter if you know the os.\n";
+		exit(3);
+	}
 	else
 	{
 		echo "Usage:";
 		echo "
-	./".basename(__FILE__)." -H <host address> -C <snmp community> -w <warn> -c <crit> [-V <snmp version>] [-P <perfdata>] [-E '<exclude partitions>']\n\n";
+	./".basename(__FILE__)." -H <host address> -C <snmp community> -w <warn> -c <crit> [-V <snmp version>] [-P <perfdata>] [-E '<exclude partitions>'] [-O '<operating system>']\n\n";
 		
 		echo "Options:";
 		echo "
@@ -90,6 +95,8 @@ function show_help($help_for)
 	Optional: Give 'yes' as argument if you wish performace data output
 	[-E '<exclude partitions>']
 	Optional: Exclude partitions with a comma separated list on Windows like 'D:,E:' (with or without colon) or on Linux '/var,/tmp'
+	[-O '<operating system>']
+	Optional: The plugin detects automaticly the running OS. But in some cases (e.g. Barracuda firewalls) the running OS can't be determined. So use -O Linux or -O Windows to force the right OIDs
 	\n";
 
 		echo "Example:";
@@ -134,7 +141,7 @@ function snmp_walk($snmp_host, $snmp_community, $snmp_oid, $snmp_version)
 
 //get arguments from cli
 $arguments 	= array();
-$arguments 	= getopt("H:C:V:w:c:E:P:");
+$arguments 	= getopt("H:C:V:w:c:E:P:O:");
 
 if(is_array($arguments) && count($arguments) < 4)
 	show_help("");
@@ -187,9 +194,15 @@ $output_snmp_exclude	= "";
 $snmp_exclude			= "";
 if(!empty($arguments['E']))
 {
-	$snmp_exclude			= $arguments['E'];
+	$snmp_exclude			= trim($arguments['E']);
 	$output_snmp_exclude	= $snmp_exclude;
 }
+
+if(!empty($arguments['O']))
+	$snmp_os			= trim($arguments['O']);
+else 
+	$snmp_os			= "";
+
 
 $output_perfdata 		= "";		//define string for performance data output
 $exit_code				= 0;		//set default exit code to "ok"
@@ -269,6 +282,7 @@ $i 							= 0;
 $output_string_head_error	= "";
 $output_string_head			= "";
 $output_string				= "";
+$os_determined				= false;
 
 if(!empty($snmp_exclude))
 	$snmp_exclude			= explode(",",$snmp_exclude);
@@ -297,8 +311,10 @@ foreach($storage_info as $storage_info_value)
 	//---------------------------------------------------------------------------
 	//-------------------------- Check Linux Partitions -------------------------
 
-	if(strstr($sysDescr[0], "Linux"))
+	if((!empty($snmp_os) && $snmp_os == "Linux") || strstr($sysDescr[0], "Linux"))
 	{
+		$os_determined = true;
+
 		//show only harddisks
 		if(!strstr($hrStorageType_output, "hrStorageFixedDisk") && !strstr($hrStorageType_output, "hrStorageNetworkDisk"))
 			$output_storage = false;
@@ -354,8 +370,9 @@ foreach($storage_info as $storage_info_value)
 	//---------------------------------------------------------------------------
 	//------------------------- Check Windows Partitions ------------------------
 
-	else if(strstr($sysDescr[0], "Windows"))
+	else if((!empty($snmp_os) && $snmp_os == "Windows") || strstr($sysDescr[0], "Windows"))
 	{
+		$os_determined = true;
 		
 		//show only harddisks
 		if(!strstr($hrStorageType_output, "hrStorageFixedDisk") && !strstr($hrStorageType_output, "hrStorageNetworkDisk"))
@@ -423,6 +440,8 @@ foreach($storage_info as $storage_info_value)
 $i++;
 }
 
+if($os_determined == false)
+	show_help("ERROR_NO_OS");
 
 
 
