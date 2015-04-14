@@ -5,7 +5,7 @@
 Automaticly checks all partitions of a Windows or Linux operating system.
 You don't need special libraries. If you have PHP 5 or higher installed it should be working.
 
-Copyright (c) 2014 www.usolved.net 
+Copyright (c) 2015 www.usolved.net 
 Published under https://github.com/usolved/check_usolved_disks
 
 
@@ -279,6 +279,7 @@ $sysDescr = snmp_walk($snmp_host, $snmp_community, $snmp_oid_sysDescr, $snmp_ver
 //--------------------- Loop throught all partitions ------------------------
 
 $i 							= 0;
+$disks_found 				= 0;
 $output_string_head_error	= "";
 $output_string_head			= "";
 $output_string				= "";
@@ -316,7 +317,7 @@ foreach($storage_info as $storage_info_value)
 		$os_determined = true;
 
 		//show only harddisks
-		if(!strstr($hrStorageType_output, "hrStorageFixedDisk") && !strstr($hrStorageType_output, "hrStorageNetworkDisk"))
+		if((!strstr($hrStorageType_output, "hrStorageFixedDisk") && !strstr($hrStorageType_output, "hrStorageNetworkDisk"))  && (!strstr($hrStorageType_output, ".3.6.1.2.1.25.2.1.4") && !strstr($hrStorageType_output, ".3.6.1.2.1.25.2.1.10")))
 			$output_storage = false;
 
 		//don't show excluded partitions
@@ -363,6 +364,8 @@ foreach($storage_info as $storage_info_value)
 				$output_perfdata .= "Disk-".$hrStorageDesc_output."=".$hrStorageUsed_output."GB;".$used_gb_warning.";".$used_gb_critical.";0;".$hrStorageSize_output." ";
 			}
 
+			$disks_found++;
+
 		}
 		
 	}
@@ -373,9 +376,10 @@ foreach($storage_info as $storage_info_value)
 	else if((!empty($snmp_os) && $snmp_os == "Windows") || strstr($sysDescr[0], "Windows"))
 	{
 		$os_determined = true;
+
 		
 		//show only harddisks
-		if(!strstr($hrStorageType_output, "hrStorageFixedDisk") && !strstr($hrStorageType_output, "hrStorageNetworkDisk"))
+		if(!strstr($hrStorageType_output, "hrStorageFixedDisk") && !strstr($hrStorageType_output, "hrStorageNetworkDisk")  && !strstr($hrStorageType_output, ".3.6.1.2.1.25.2.1.4") && !strstr($hrStorageType_output, ".3.6.1.2.1.25.2.1.10"))
 			$output_storage = false;
 
 		//if not <name>:\, don't show it
@@ -387,8 +391,11 @@ foreach($storage_info as $storage_info_value)
 			$output_storage = false;
 
 		//$hrStorageDesc_output could be "C:\ Label:  Serial Number a4d5d99d" so just use the first two chars
-		$hrStorageDesc_output	= substr($hrStorageDesc_output, 0, 2);
-		
+		if(substr($hrStorageDesc_output, 0, 1) == "\"")
+			$hrStorageDesc_output	= substr($hrStorageDesc_output, 1, 2);
+		else
+			$hrStorageDesc_output	= substr($hrStorageDesc_output, 0, 2);
+
 		//don't show excluded partitions
 		if(is_array($snmp_exclude) && (in_array($hrStorageDesc_output, $snmp_exclude) || in_array(str_replace(":","",$hrStorageDesc_output), $snmp_exclude)))
 			$output_storage = false;
@@ -432,7 +439,10 @@ foreach($storage_info as $storage_info_value)
 				{
 					$output_perfdata .= "Disk-".$hrStorageDesc_output."=".$hrStorageUsed_output."GB;".$used_gb_warning.";".$used_gb_critical.";0;".$hrStorageSize_output." ";
 				}
+
+				$disks_found++;
 			}
+
 		}
 	}
 	
@@ -443,7 +453,11 @@ $i++;
 if($os_determined == false)
 	show_help("ERROR_NO_OS");
 
-
+if($disks_found == 0)
+{
+	$output_string_head .= "Could not get disk info, ";
+	$exit_code 			= 2;
+}
 
 //---------------------------------------------------------------------------
 //----------------------------- Output to stdout ----------------------------
