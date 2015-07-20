@@ -1,0 +1,18 @@
+name: check_usolved_disks
+description: "file:///README.md"
+url: "https://github.com/usolved/check_usolved_disks"
+tags: Disk,Space,Partition
+vendor: Windows,Linux
+target: Operating System
+type: Plugin
+license: gplv3
+releases: 
+  - 
+    name: 1.1
+    description: "Bugfix: If the disk capacity exceeded the 32 bit snmp value, the disk size wasn't calculated and listed correctly"
+    files: 
+      - 
+        name: check_usolved_disks.php
+        url: "file:///check_usolved_disks.php"
+        description: "1.1 release"
+        checksum: da093b50a5a7e70d02cb3459c60419ca
